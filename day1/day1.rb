@@ -1,5 +1,3 @@
-require 'pry'
-
 input = []
 
 File.open('input.txt', 'r') do |f|
