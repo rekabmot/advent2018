@@ -28,6 +28,16 @@ class Guard
     def to_s
         "#{id} - #{sleep_total}"
     end
+
+    def freq_sleep_min
+        agg = aggregate_sleep_mins
+        min = agg.keys.sort { |a, b| agg[a].length <=> agg[b].length }.last
+        return min, agg[min].length
+    end
+
+    def aggregate_sleep_mins
+        sleep_minutes.group_by { |x| x }
+    end
 end
 
 def get_events(input)
@@ -77,16 +87,22 @@ events.each do |event|
     end
 end
 
-# puts guards.values.sort { |a, b| a.sleep_total <=> b.sleep_total }
+def puzzle_1(guards)
+    sleepy_guard = guards.values.sort { |a, b| a.sleep_total <=> b.sleep_total }.last
 
-sleepy_guard = guards.values.sort { |a, b| a.sleep_total <=> b.sleep_total }.last
+    aggregate_sleep_minutes = sleepy_guard.aggregate_sleep_mins
 
-aggregate_sleep_minutes = sleepy_guard.sleep_minutes.group_by { |x| x }
+    sleepiest_minute = aggregate_sleep_minutes.keys.sort { |a, b| aggregate_sleep_minutes[a].length <=> aggregate_sleep_minutes[b].length }.last
 
-sleepiest_minute = aggregate_sleep_minutes.keys.sort { |a, b| aggregate_sleep_minutes[a].length <=> aggregate_sleep_minutes[b].length }.last
+    puts "#{sleepy_guard} :: #{sleepiest_minute} :: #{sleepy_guard.id.to_i * sleepiest_minute}"
+end
 
-puts sleepy_guard
-puts sleepiest_minute
+def puzzle_2(guards)
+    guards.values.each do |g|
+        min, val = g.freq_sleep_min
+        puts "#{g.id} - #{min} - #{val}"
+    end
+end
 
-puts sleepy_guard.id.to_i * sleepiest_minute
-
+puzzle_1(guards)
+puzzle_2(guards)
