@@ -1,10 +1,6 @@
-input = []
+require '../read_file'
 
-File.open('input.txt', 'r') do |f|
-    f.each_line do |l|
-        input << l
-    end
-end
+input = read_file
 
 input = input.map(&:to_i)
 
