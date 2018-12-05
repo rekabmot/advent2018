@@ -21,13 +21,41 @@ def process(input)
     end
 end
 
-prevSize = 0
-size = input.size
+def get_units(input)
+    units = []
 
-while size != prevSize
-    prevSize = input.size
-    process(input)
-    size = input.size
+    input.each do |x|
+        units << x.upcase unless units.include? x.upcase
+    end
+
+    units
 end
 
-puts input.size
+def puzzle1(input)
+    prevSize = 0
+    size = input.size
+
+    while size != prevSize
+        prevSize = input.size
+        process(input)
+        size = input.size
+    end
+    input.size
+end
+
+def puzzle2(input)
+    units = get_units(input)
+
+    results = {}
+
+    units.each do |u|
+        results[u] = puzzle1(input.reject { |x| x == u || x == u.downcase })
+    end
+
+    key = results.keys.sort { |a, b| results[a] <=> results[b] }.first
+
+    results[key]
+end
+
+# puts puzzle1(input)
+puts puzzle2(input)
